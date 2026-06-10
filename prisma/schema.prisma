@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id          String   @id @default(uuid())
+  name        String
+  company     String?
+  email       String   @unique
+  phone       String?
+  tags        String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  sentCount   Int      @default(0)
+  lastSentAt  DateTime?
+  campaigns   CampaignContact[]
+}
+
+model Template {
+  id          String   @id @default(uuid())
+  name        String
+  subject     String
+  htmlBody    String
+  previewText String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  campaigns   Campaign[]
+}
+
+model Campaign {
+  id           String   @id @default(uuid())
+  name         String
+  subject      String
+  htmlBody     String
+  status       String   @default("draft")
+  scheduledAt  DateTime?
+  sentAt       DateTime?
+  totalSent    Int      @default(0)
+  totalOpened  Int      @default(0)
+  totalClicked Int      @default(0)
+  createdAt    DateTime @default(now())
+  templateId   String?
+  template     Template? @relation(fields: [templateId], references: [id])
+  contacts     CampaignContact[]
+}
+
+model CampaignContact {
+  id          String   @id @default(uuid())
+  campaignId  String
+  contactId   String
+  status      String   @default("pending")
+  sentAt      DateTime?
+  openedAt    DateTime?
+  clickedAt   DateTime?
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  contact     Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
+model DailySendLog {
+  id        String   @id @default(uuid())
+  date      String
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Scheduler {
+  id          String   @id @default(uuid())
+  name        String
+  subject     String
+  htmlBody    String?
+  cronExpr    String
+  active      Boolean  @default(true)
+  tags        String   @default("[]")
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  createdAt   DateTime @default(now())
+}
