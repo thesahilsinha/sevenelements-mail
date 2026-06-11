@@ -8,7 +8,7 @@ const BRAND = '#e13a30'
 
 interface Contact { id: string; name: string; email: string; company?: string; tags: string }
 interface Template { id: string; name: string; subject: string; htmlBody: string }
-interface Campaign { id: string; name: string; subject: string; status: string; totalSent: number; totalOpened: number; createdAt: string; contacts: any[] }
+interface Campaign { id: string; name: string; subject: string; htmlBody: string; status: string; totalSent: number; totalOpened: number; createdAt: string; contacts: any[] }
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
