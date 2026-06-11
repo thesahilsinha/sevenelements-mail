@@ -1,9 +1,11 @@
 'use client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Users, Send, FileText, Clock, LogOut, Menu, X } from 'lucide-react'
+// import { LayoutDashboard, Users, Send, FileText, Clock, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, Send, FileText, Clock, LogOut, Menu, X, BookOpen } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
+
 
 const BRAND = '#e13a30'
 
@@ -13,6 +15,7 @@ const nav = [
   { href: '/templates', icon: FileText, label: 'Templates' },
   { href: '/campaigns', icon: Send, label: 'Campaigns' },
   { href: '/scheduler', icon: Clock, label: 'Scheduler' },
+  { href: '/guide', icon: BookOpen, label: 'User Guide' },
 ]
 
 export default function Sidebar() {
