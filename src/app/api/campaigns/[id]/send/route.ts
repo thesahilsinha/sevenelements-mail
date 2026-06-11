@@ -3,12 +3,13 @@ import { prisma } from '@/lib/db'
 import { isAuthenticated } from '@/lib/auth'
 import { transporter, canSend, incrementDailyCount, buildTrackedHtml } from '@/lib/mailer'
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!await isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { id } = await params
 
     const campaign = await prisma.campaign.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { contacts: { include: { contact: true }, where: { status: 'pending' } } }
     })
     if (!campaign) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     await incrementDailyCount(sent)
     await prisma.campaign.update({
-      where: { id: params.id },
+      where: { id },
       data: { status: 'sent', sentAt: new Date(), totalSent: { increment: sent } }
     })
 
